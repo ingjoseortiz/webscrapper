@@ -3,41 +3,36 @@ import jsdom from "jsdom";
 
 export const getPromodescuentos = async (req, res) => {
   try {
+    console.log("Start Of getPromodescuentos");
     const webUrl = "https://www.promodescuentos.com/";
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     const response = await page.goto(webUrl, { waitUntil: "load", timeout: 0 });
     const body = await response.text();
+
     const {
       window: { document },
     } = new jsdom.JSDOM(body);
 
     await autoScroll(page, 150);
     const results = await page.evaluate(() => {
-      setTimeout(() => {
-        page.evaluate(() => {
-          window.scrollBy(0, window.innerHeight);
-        });
-        console.log("first time out");
-      }, 3000);
-
       const articles = document.querySelectorAll("article");
       const data = [...articles].map((result) => {
         const title = result.querySelector(".thread-title").innerText;
         const description = result.querySelector(".threadGrid-body").innerText;
         const img = result.querySelector(".thread-image ").src;
+        const internalUrl = result.querySelector(".thread-link ").href;
 
         return {
           title,
           description,
           img,
+          internalUrl,
         };
       });
       return data;
     });
-
-    console.log("START", results);
-    // document.querySelector("body").innerHTML(results);
+    console.log("END Of getPromodescuentos", results);
 
     res.status(200).send(results);
     await browser.close();
