@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch API Example</title>
+</head>
+<body>
+
+<div id="result"></div>
+<script>
+    // Function to make a GET request using Fetch API
+    function fetchData() {
+        // Specify the URL you want to make the request to
+        const url = 'http://localhost:2000/test';
+
+        // Use the Fetch API to make a GET request
+        fetch(url)
+            .then(response => {
+                // Check if the request was successful (status code 200-299)
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                // Parse the response as JSON
+                return response.json();
+            })
+            .then(data => {
+                // Display the result on the webpage 
+                const resultDiv = document.getElementById('result'); 
+                data.forEach(element => {     
+                resultDiv.innerHTML += `
+                <h2>Title: ${element.title}</h2>
+                <p>Body: ${element.description}</p>
+                <img src="${element.img}" />
+                <hr/>`
+                ;
+                });
+            })
+            .catch(error => {
+                // Handle errors
+                console.error('Error fetching data:', error);
+            });
+    }
+
+    // Call the fetchData function when the page loads
+    window.onload = fetchData;
+</script>
+</body>
+</html>
