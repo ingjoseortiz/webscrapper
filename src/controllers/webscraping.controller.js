@@ -1,5 +1,6 @@
 import puppeteer from "puppeteer";
 import jsdom from "jsdom";
+import { insertValues } from "./query.js";
 
 export const getPromodescuentos = async (req, res) => {
   try {
@@ -32,9 +33,10 @@ export const getPromodescuentos = async (req, res) => {
       });
       return data;
     });
-    console.log("END Of getPromodescuentos", results);
+    //console.log("END Of getPromodescuentos", results);
 
-    res.status(200).send(results);
+    //res.status(200).send(results);
+    return results;
     await browser.close();
   } catch (error) {
     console.error(error);
@@ -184,44 +186,18 @@ async function autoScroll(page, maxScrolls) {
   }, maxScrolls); // pass maxScrolls to the function
 }
 
-/*
-const scrollWebPage = async (title, description, img) => {
-  await page.evaluate(() => {
-    window.scrollBy(0, window.innerHeight);
-  });
+export const putPromociones = async (req, res) => {
+  const results = await getPromodescuentos(req, res);
+  console.log("new method", results);
 
-  // Wait for some time to let the content load (you may need to adjust this)
-  await page.waitForTimeout(2000);
+  // results.forEach((element) => {
+  //   const data = {
+  //     title: element.title,
+  //     description: element.description,
+  //     img: element.img,
+  //     url: element.url,
+  //   };
 
-  // Extract additional information after scrolling
-  const additionalTitles = await page.evaluate(() => {
-    // Modify this to extract additional titles
-    const titleElements = document.querySelectorAll(
-      ".additional-title-selector"
-    );
-    return Array.from(titleElements, (element) => element.textContent);
-  });
-
-  const additionalImgSrcs = await page.evaluate(() => {
-    // Modify this to extract additional image sources
-    const imgElements = document.querySelectorAll(".additional-img-selector");
-    return Array.from(imgElements, (element) => element.getAttribute("src"));
-  });
-
-  const additionalDescriptions = await page.evaluate(() => {
-    // Modify this to extract additional descriptions
-    const descriptionElements = document.querySelectorAll(
-      ".additional-description-selector"
-    );
-    return Array.from(descriptionElements, (element) =>
-      element.getAttribute("content")
-    );
-  });
-
-  // Concatenate the additional information to the existing arrays
-  title.push(...additionalTitles);
-  img.push(...additionalImgSrcs);
-  description.push(...additionalDescriptions);
-  console.log(title, img, description);
+  //   insertValues(data);
+  // });
 };
-*/
